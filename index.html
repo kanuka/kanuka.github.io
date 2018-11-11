@@ -125,8 +125,6 @@
   <span class="kt">void</span> <span class="nf">onStart</span><span class="o">()</span> <span class="o">{</span>
     <span class="c1">// close resources on shutdown</span>
   <span class="o">}</span>
-
-  <span class="o">...</span>
   <span class="o">...</span>
 </pre></div>
 </div>
@@ -135,19 +133,44 @@
 
     <div class="row">
       <div class="col-md-3 feature">
-        <h3>Features</h3>
+        <h3>@Factory and @Bean</h3>
         <p>
-
+          Sometimes we need to have some logic when creating beans. We can use <code>@Factory</code> on a class
+          that has methods annotated with <code>@Bean</code> to perform logic when creating beans.
+        </p>
+        <p>
+          These factory methods can have dependencies.
+        </p>
+        <p>
+          In Spring DI this equates to using <code>@Configuration</code> and <code>@Bean</code>.
+          In Micronaut DI this equates to using <code>@Factory</code> and <code>@Bean</code>.
         </p>
       </div>
-      <div class="col-md-3 feature mtl">
-        <h5><a href="/docs/factory">@Factory and @Bean</a></h5>
-        <h5><a href="/docs/provider">Provider<T></a></h5>
+      <div class="col-md-6 feature mtl">
+        <div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@Factory</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyFactory</span> <span class="o">{</span>
 
-      </div>
-      <div class="col-md-3 feature mtl">
-        <h5><a href="/docs/list">List<T></a></h5>
-        <h5><a href="/docs/optional">Optional<T></a></h5>
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Configuration</span> <span class="n">configuraton</span><span class="o">;</span>
+
+  <span class="nd">@Inject</span>
+  <span class="n">MyFactory</span><span class="o">(</span><span class="n">Configuration</span> <span class="n">configuraton</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">configuraton</span> <span class="o">=</span> <span class="n">configuraton</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Bean</span>
+  <span class="n">Foo</span> <span class="nf">createFoo</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// potentially perform some logic</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Foo</span><span class="o">(...);</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Bean</span>
+  <span class="n">Bar</span> <span class="nf">createBar</span><span class="o">(</span><span class="n">Foo</span> <span class="n">foo</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// potentially perform some logic</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Bar</span><span class="o">(...);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
       </div>
     </div>
 
@@ -163,16 +186,61 @@
 
     <div class="row">
       <div class="col-md-3 feature">
+        <h3>Maven</h3>
+        <p>
+          Add the 2 dependencies.
+        </p>
       </div>
-      <div class="col-md-3 feature">
-        <h4><a href="/docs/getting-started"><i class="fas fa-chevron-circle-right"></i> Getting started</a></h4>
-      </div>
-      <div class="col-md-3 feature">
-        <h4><a href="/docs/getting-started/maven"><i class="fas fa-chevron-circle-right"></i> Maven</a></h4>
-        <h4><a href="/docs/getting-started/gradle"><i class="fas fa-chevron-circle-right"></i> Gradle</a></h4>
+      <div class="col-md-6 feature">
+        <div class="syntax xml"><div class="highlight"><pre><span></span><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>io.kanuka<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>kanuka<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>0.3<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>io.kanuka<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>kanuka-generator<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>0.3<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+</div>
+     </div>
+   </div>
+    <div class="row">
+     <div class="col-md-3 feature">
+       <h3>Use BeanContext</h3>
+       <p>
+         Use SystemContext or BootContext to obtain the bean context
+         and use the beans.
+       </p>
+     </div>
+     <div class="col-md-6 feature">
+
+       <div class="syntax java"><div class="highlight"><pre><span></span><span class="c1">// obtain a bean from the context and use it</span>
+<span class="n">CoffeeMaker</span> <span class="n">coffeeMaker</span> <span class="o">=</span> <span class="n">SystemContext</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">CoffeeMaker</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">coffeeMaker</span><span class="o">.</span><span class="na">brew</span><span class="o">();</span>
+</pre></div>
+</div>
+
+        <div class="syntax java"><div class="highlight"><pre><span></span><span class="c1">// create the context programmatically</span>
+<span class="c1">// ... with some options</span>
+<span class="k">try</span> <span class="o">(</span><span class="n">BeanContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BootContext</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">withNoShutdownHook</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">withBean</span><span class="o">(</span><span class="n">someTestDouble</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">load</span><span class="o">())</span> <span class="o">{</span>
+
+  <span class="n">CoffeeMaker</span> <span class="n">coffeeMaker</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">CoffeeMaker</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+  <span class="n">coffeeMaker</span><span class="o">.</span><span class="na">brew</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="c1">// Using try with resources block above such that</span>
+<span class="c1">// the context is closed</span>
+</pre></div>
+</div>
       </div>
     </div>
-
 
 </div>
 
