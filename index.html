@@ -1,10 +1,229 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta id="layout-head" />
+  <title>Kanuka dependency injection for Java</title>
+  <link rel="shortcut icon" href="/images/favicon.ico" >
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="/css/site.css">
+
 </head>
-<body>
-<h1>Kanuka Dependency injection</h1>
-<p>
-Documentation in progress ...
-</p>
-</body>
+  <body>
+  <div id="wrap">
+    <div id="header">
+    <div class="navbar" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">
+            <!--<img src="/images/lg5-21x100.png" height="35">-->
+          </a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav pull-right nav-btn-rhs">
+            <li ><a href="/"><span class="fas fa-home"></span>  Home</a></li>
+            <li ><a href="/docs">Docs</a></li>
+            <li ><a target="_blank" href="/apidoc/1">ApiDocs</a></li>
+            <li ><a href="/releases">Releases</a></li>
+            <li ><a target="_blank" href="https://github.com/kanuka/kanuka"> <i class="fab fa-github"></i></a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+  </div>
+  <div id="main">
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="jumbotron">
+        <div class="container">
+          <h1>Kanuka dependency injection</h1>
+          <h2 style="margin-left: 30px;">Fast and light source code generated DI for Java</h2>
+          <h3>Current version - <span class="kanuka-version">0.3</span></h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 main-pg-idx">
+      <ul>
+        <li><h4><a class="bright-link" href="/docs/getting-started"><i class="fas fa-chevron-circle-right"></i> Getting started</a></h4></li>
+        <li><h4><a href="/docs"><i class="fas fa-chevron-circle-right"></i> Documentation</a></h4></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!--<div class="container mtl">-->
+  <!--<div class="row">-->
+    <!--<div class="col-md-9">-->
+      <!--<div id="nav-search"><form action="https://www.google.com/search" method="get" class="inline-form">
+  <div class="page-inline-search" style="margin-bottom:8px;">
+    <div class="input-group">
+      <input name="q" id="searchinput" type="text" class="form-control" placeholder="Search... (press 's' to focus)" data-placeholder-focus="Search... (use '↑', '↓' and '⏎' to select results)" data-placeholder-blur="Search... (press 's' to focus)" autocomplete="off">
+      <input type="hidden" name="as_sitesearch" value="ebean-orm.github.io">
+      <div class="input-group-btn">
+        <button class="btn btn-default form-control" type="submit"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+    <div class="search-results-inline-container" style="display: none;">
+      <ul id="search-results-container" class="search-results"><li class=" active"><a href="/docs" title="Docs"><span style="color:#777;">Docs</span> Documentation </a></li><li class=""><small style="color:#999;">And 101 more...</small></li></ul>
+    </div>
+  </div>
+</form>
+</div>-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
+
+<div class="erkbg mtl">
+  <div class="container">
+
+    <h2 class="erk ">About Kanuka</h2>
+
+    <div class="row">
+      <div class="col-md-3 feature">
+        <h3>Uses APT</h3>
+        <p>
+          Kanuka uses annotation processing to generate Java source code to perform dependency injection.
+        </p>
+        <p>
+          It is similar in approach to <a target="_blank" href="https://google.github.io/dagger/">Google Dagger</a>
+          but is orientated for server-side use cases with support
+          for bean Lifecycle via <code>@PostConstruct</code> and <code>@PreDestroy</code>, support for
+          <code>@Factory</code> and <code>@Bean</code>.
+        </p>
+      </div>
+      <div class="col-md-6 feature mtl">
+        <div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@Singleton</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CoffeeMaker</span> <span class="o">{</span>
+
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Pump</span> <span class="n">pump</span><span class="o">;</span>
+
+  <span class="nd">@Inject</span>
+  <span class="n">CoffeeMaker</span><span class="o">(</span><span class="n">CoffeeMaker</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">pump</span> <span class="o">=</span> <span class="n">pump</span>
+  <span class="o">}</span>
+
+  <span class="nd">@PostConstruct</span>
+  <span class="kt">void</span> <span class="nf">onStart</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// perform action on startup, open resources etc</span>
+  <span class="o">}</span>
+
+  <span class="nd">@PreDestory</span>
+  <span class="kt">void</span> <span class="nf">onStart</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// close resources on shutdown</span>
+  <span class="o">}</span>
+
+  <span class="o">...</span>
+  <span class="o">...</span>
+</pre></div>
+</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3 feature">
+        <h3>Features</h3>
+        <p>
+
+        </p>
+      </div>
+      <div class="col-md-3 feature mtl">
+        <h5><a href="/docs/factory">@Factory and @Bean</a></h5>
+        <h5><a href="/docs/provider">Provider<T></a></h5>
+
+      </div>
+      <div class="col-md-3 feature mtl">
+        <h5><a href="/docs/list">List<T></a></h5>
+        <h5><a href="/docs/optional">Optional<T></a></h5>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<div class="">
+
+  <div class="container">
+
+    <h2 class="erk">Getting started</h2>
+
+    <div class="row">
+      <div class="col-md-3 feature">
+      </div>
+      <div class="col-md-3 feature">
+        <h4><a href="/docs/getting-started"><i class="fas fa-chevron-circle-right"></i> Getting started</a></h4>
+      </div>
+      <div class="col-md-3 feature">
+        <h4><a href="/docs/getting-started/maven"><i class="fas fa-chevron-circle-right"></i> Maven</a></h4>
+        <h4><a href="/docs/getting-started/gradle"><i class="fas fa-chevron-circle-right"></i> Gradle</a></h4>
+      </div>
+    </div>
+
+
+</div>
+
+<div class="erkbg">
+  <div class="container">
+    <h2 class="erk">More stuff?</h2>
+
+    <div class="row">
+      <div class="col-md-3">
+        <h3><a href="/docs/"></a></h3>
+        <p>
+
+        </p>
+      </div>
+
+      <div class="col-md-6 mtl">
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+  </div>
+</div>
+
+
+<footer id="footer">
+  <div class="doc-footer">
+    <ul class="doc-footer-links">
+      <li> </li>
+      <li> | </li>
+      <li> | </li>
+    </ul>
+  </div>
+</footer>
+
+  <script type="text/javascript">
+    var categoryNames = {};
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/jquery.easing.min.js"></script>
+
+    <script src="/js/jquery.storageapi.min.js"></script>
+  <script src="/js/ebean-site.js"></script>
+  <script src="/js/extra.js"></script>
+
+
+  </body>
 </html>
