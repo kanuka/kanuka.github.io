@@ -112,8 +112,8 @@
   <span class="kd">private</span> <span class="kd">final</span> <span class="n">Pump</span> <span class="n">pump</span><span class="o">;</span>
 
   <span class="nd">@Inject</span>
-  <span class="n">CoffeeMaker</span><span class="o">(</span><span class="n">CoffeeMaker</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">this</span><span class="o">.</span><span class="na">pump</span> <span class="o">=</span> <span class="n">pump</span>
+  <span class="n">CoffeeMaker</span><span class="o">(</span><span class="n">Pump</span> <span class="n">pump</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">pump</span> <span class="o">=</span> <span class="n">pump</span><span class="o">;</span>
   <span class="o">}</span>
 
   <span class="nd">@PostConstruct</span>
