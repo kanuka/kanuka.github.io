@@ -258,12 +258,24 @@
         </p>
       </div>
       <div class="col-md-6 feature mtl">
-        <div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@ContextModule</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;coffee&quot;</span><span class="o">,</span> <span class="n">dependsOn</span><span class="o">=</span><span class="s">&quot;common-configuration&quot;</span><span class="o">)</span>
+        <p>
+          We name modules with common functionality that we want to inject in other modules.
+        </p>
+        <div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@ContextModule</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;feature-toggle&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>
+          Modules can specify that they depend on other modules. In the example below the "job system"
+          is expecting to inject beans from a common "feature toggle" module.
+        </p>
+        <div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@ContextModule</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;job-system&quot;</span><span class="o">,</span> <span class="n">dependsOn</span><span class="o">={</span><span class="s">&quot;feature-toggle&quot;</span><span class="o">})</span>
 </pre></div>
 </div>
       </div>
     </div>
-
 
   </div>
 </div>
