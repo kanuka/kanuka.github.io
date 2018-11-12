@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<title>Source code</title>
+<link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
+</head>
+<body>
+<div class="sourceContainer">
+<pre><span class="sourceLineNo">001</span>package io.kanuka;<a name="line.1"></a>
+<span class="sourceLineNo">002</span><a name="line.2"></a>
+<span class="sourceLineNo">003</span>import java.util.List;<a name="line.3"></a>
+<span class="sourceLineNo">004</span><a name="line.4"></a>
+<span class="sourceLineNo">005</span>/**<a name="line.5"></a>
+<span class="sourceLineNo">006</span> * Provides a global system wide BeanContext that contains all the bean contexts in the classpath.<a name="line.6"></a>
+<span class="sourceLineNo">007</span> * &lt;p&gt;<a name="line.7"></a>
+<span class="sourceLineNo">008</span> * This will automatically get all the bean contexts and wire them all as necessary. It will use<a name="line.8"></a>
+<span class="sourceLineNo">009</span> * a shutdown hook to fire any &lt;code&gt;@PreDestroy&lt;/code&gt; methods on beans.<a name="line.9"></a>
+<span class="sourceLineNo">010</span> * &lt;/p&gt;<a name="line.10"></a>
+<span class="sourceLineNo">011</span> *<a name="line.11"></a>
+<span class="sourceLineNo">012</span> * &lt;h3&gt;Example: get a bean&lt;/h3&gt;<a name="line.12"></a>
+<span class="sourceLineNo">013</span> * &lt;pre&gt;{@code<a name="line.13"></a>
+<span class="sourceLineNo">014</span> *<a name="line.14"></a>
+<span class="sourceLineNo">015</span> *   CoffeeMaker coffeeMaker = SystemContext.getBean(CoffeeMaker.class);<a name="line.15"></a>
+<span class="sourceLineNo">016</span> *   coffeeMaker.brew();<a name="line.16"></a>
+<span class="sourceLineNo">017</span> *<a name="line.17"></a>
+<span class="sourceLineNo">018</span> * }&lt;/pre&gt;<a name="line.18"></a>
+<span class="sourceLineNo">019</span> *<a name="line.19"></a>
+<span class="sourceLineNo">020</span> * &lt;h3&gt;Example: get all the Controllers&lt;/h3&gt;<a name="line.20"></a>
+<span class="sourceLineNo">021</span> * &lt;pre&gt;{@code<a name="line.21"></a>
+<span class="sourceLineNo">022</span> *<a name="line.22"></a>
+<span class="sourceLineNo">023</span> *   // e.g. register all controllers with web a framework<a name="line.23"></a>
+<span class="sourceLineNo">024</span> *   // .. where Controller is an annotation on the beans<a name="line.24"></a>
+<span class="sourceLineNo">025</span> *<a name="line.25"></a>
+<span class="sourceLineNo">026</span> *   List&lt;Object&gt; controllers = SystemContext.getBeans(Controller.class);<a name="line.26"></a>
+<span class="sourceLineNo">027</span> *<a name="line.27"></a>
+<span class="sourceLineNo">028</span> *   // register all the controllers ...<a name="line.28"></a>
+<span class="sourceLineNo">029</span> *<a name="line.29"></a>
+<span class="sourceLineNo">030</span> * }&lt;/pre&gt;<a name="line.30"></a>
+<span class="sourceLineNo">031</span> */<a name="line.31"></a>
+<span class="sourceLineNo">032</span>public class SystemContext {<a name="line.32"></a>
+<span class="sourceLineNo">033</span><a name="line.33"></a>
+<span class="sourceLineNo">034</span>  private static BeanContext rootContext = init();<a name="line.34"></a>
+<span class="sourceLineNo">035</span><a name="line.35"></a>
+<span class="sourceLineNo">036</span>  private static BeanContext init() {<a name="line.36"></a>
+<span class="sourceLineNo">037</span>    return new BootContext().load();<a name="line.37"></a>
+<span class="sourceLineNo">038</span>  }<a name="line.38"></a>
+<span class="sourceLineNo">039</span><a name="line.39"></a>
+<span class="sourceLineNo">040</span>  private SystemContext() {<a name="line.40"></a>
+<span class="sourceLineNo">041</span>    // hide<a name="line.41"></a>
+<span class="sourceLineNo">042</span>  }<a name="line.42"></a>
+<span class="sourceLineNo">043</span><a name="line.43"></a>
+<span class="sourceLineNo">044</span>  /**<a name="line.44"></a>
+<span class="sourceLineNo">045</span>   * Return a single bean given the type.<a name="line.45"></a>
+<span class="sourceLineNo">046</span>   *<a name="line.46"></a>
+<span class="sourceLineNo">047</span>   * &lt;pre&gt;{@code<a name="line.47"></a>
+<span class="sourceLineNo">048</span>   *<a name="line.48"></a>
+<span class="sourceLineNo">049</span>   *   CoffeeMaker coffeeMaker = SystemContext.getBean(CoffeeMaker.class);<a name="line.49"></a>
+<span class="sourceLineNo">050</span>   *   coffeeMaker.brew();<a name="line.50"></a>
+<span class="sourceLineNo">051</span>   *<a name="line.51"></a>
+<span class="sourceLineNo">052</span>   * }&lt;/pre&gt;<a name="line.52"></a>
+<span class="sourceLineNo">053</span>   *<a name="line.53"></a>
+<span class="sourceLineNo">054</span>   * @param type an interface or bean type<a name="line.54"></a>
+<span class="sourceLineNo">055</span>   */<a name="line.55"></a>
+<span class="sourceLineNo">056</span>  public static &lt;T&gt; T getBean(Class&lt;T&gt; type) {<a name="line.56"></a>
+<span class="sourceLineNo">057</span>    return rootContext.getBean(type);<a name="line.57"></a>
+<span class="sourceLineNo">058</span>  }<a name="line.58"></a>
+<span class="sourceLineNo">059</span><a name="line.59"></a>
+<span class="sourceLineNo">060</span>  /**<a name="line.60"></a>
+<span class="sourceLineNo">061</span>   * Return a single bean given the type and name.<a name="line.61"></a>
+<span class="sourceLineNo">062</span>   *<a name="line.62"></a>
+<span class="sourceLineNo">063</span>   * &lt;pre&gt;{@code<a name="line.63"></a>
+<span class="sourceLineNo">064</span>   *<a name="line.64"></a>
+<span class="sourceLineNo">065</span>   *   Heater heater = SystemContext.getBean(Heater.class, "electric");<a name="line.65"></a>
+<span class="sourceLineNo">066</span>   *   heater.heat();<a name="line.66"></a>
+<span class="sourceLineNo">067</span>   *<a name="line.67"></a>
+<span class="sourceLineNo">068</span>   * }&lt;/pre&gt;<a name="line.68"></a>
+<span class="sourceLineNo">069</span>   *<a name="line.69"></a>
+<span class="sourceLineNo">070</span>   * @param type an interface or bean type<a name="line.70"></a>
+<span class="sourceLineNo">071</span>   * @param name the name qualifier of a specific bean<a name="line.71"></a>
+<span class="sourceLineNo">072</span>   */<a name="line.72"></a>
+<span class="sourceLineNo">073</span>  public static &lt;T&gt; T getBean(Class&lt;T&gt; type, String name) {<a name="line.73"></a>
+<span class="sourceLineNo">074</span>    return rootContext.getBean(type, name);<a name="line.74"></a>
+<span class="sourceLineNo">075</span>  }<a name="line.75"></a>
+<span class="sourceLineNo">076</span><a name="line.76"></a>
+<span class="sourceLineNo">077</span>  /**<a name="line.77"></a>
+<span class="sourceLineNo">078</span>   * Return the list of beans that implement the interface or are marked with the annotation.<a name="line.78"></a>
+<span class="sourceLineNo">079</span>   *<a name="line.79"></a>
+<span class="sourceLineNo">080</span>   * &lt;pre&gt;{@code<a name="line.80"></a>
+<span class="sourceLineNo">081</span>   *<a name="line.81"></a>
+<span class="sourceLineNo">082</span>   *   // e.g. register all controllers with web a framework<a name="line.82"></a>
+<span class="sourceLineNo">083</span>   *   // .. where Controller is an annotation on the beans<a name="line.83"></a>
+<span class="sourceLineNo">084</span>   *<a name="line.84"></a>
+<span class="sourceLineNo">085</span>   *   List&lt;Object&gt; controllers = SystemContext.getBeans(Controller.class);<a name="line.85"></a>
+<span class="sourceLineNo">086</span>   *<a name="line.86"></a>
+<span class="sourceLineNo">087</span>   * }&lt;/pre&gt;<a name="line.87"></a>
+<span class="sourceLineNo">088</span>   *<a name="line.88"></a>
+<span class="sourceLineNo">089</span>   * @param interfaceOrAnnotation An interface class or annotation class.<a name="line.89"></a>
+<span class="sourceLineNo">090</span>   */<a name="line.90"></a>
+<span class="sourceLineNo">091</span>  public static List&lt;Object&gt; getBeans(Class&lt;?&gt; interfaceOrAnnotation) {<a name="line.91"></a>
+<span class="sourceLineNo">092</span>    return rootContext.getBeans(interfaceOrAnnotation);<a name="line.92"></a>
+<span class="sourceLineNo">093</span>  }<a name="line.93"></a>
+<span class="sourceLineNo">094</span><a name="line.94"></a>
+<span class="sourceLineNo">095</span>}<a name="line.95"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</div>
+</body>
+</html>
