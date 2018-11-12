@@ -35,7 +35,7 @@
             <li ><a href="/"><span class="fas fa-home"></span>  Home</a></li>
             <li class="active"><a href="/docs">Docs</a></li>
             <li ><a target="_blank" href="/apidocs/current">ApiDocs</a></li>
-            <li ><a href="/releases">Releases</a></li>
+            <li ><a href="https://github.com/kanuka/kanuka/releases">Releases</a></li>
             <li ><a target="_blank" href="https://github.com/kanuka/kanuka"> <i class="fab fa-github"></i></a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -58,6 +58,43 @@
       
 
 <h2>Modules</h2>
+<p>
+  Support for modules allows us to wire dependencies across multiple modules (jars).
+  For example, we can have some common functionality (e.g. "feature-toggle") that we build
+  as a module (jar) and we want to build other modules that reuse that module. These other
+  modules can get the "feature toggle beans(s)" injected into them.
+</p>
+
+<h2>Module names</h2>
+<p>
+  By default a module name is derived from the top most package. It is advisable to explicitly
+  name modules that have common functionality that we want to depend on.
+</p>
+<div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@ContextModule</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;feature-toggle&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<p>
+  We use the <code>@ContextModule</code> annotation to give a module an explicit name.
+</p>
+
+<h2>Module dependsOn</h2>
+<p>
+  Modules that depend on functionality / beans from other modules specify in <code>dependsOn</code>
+  the modules that should provide beans they want to inject.
+</p>
+<div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@ContextModule</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;job-system&quot;</span><span class="o">,</span> <span class="n">dependsOn</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;feature-toggle&quot;</span><span class="o">})</span>
+</pre></div>
+</div>
+<p>
+  With the above example the "job-system" module expects bean(s) from the "feature-toggle" module to be
+  available for injecting into it's bean graph.
+</p>
+<p>
+  For Kanuka internally this defines the order in which the bean contexts in each of the modules are created.
+  Kanuka finds all the modules in the classpath (via Service loader) and then orders the modules based on the
+  dependsOn values. In the example above the "feature-toggle" bean context must be built first, and then the
+  beans it contains are available when building the "job-system" bean context.
+</p>
 
 
 

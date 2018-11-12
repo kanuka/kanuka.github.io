@@ -35,7 +35,7 @@
             <li ><a href="/"><span class="fas fa-home"></span>  Home</a></li>
             <li class="active"><a href="/docs">Docs</a></li>
             <li ><a target="_blank" href="/apidocs/current">ApiDocs</a></li>
-            <li ><a href="/releases">Releases</a></li>
+            <li ><a href="https://github.com/kanuka/kanuka/releases">Releases</a></li>
             <li ><a target="_blank" href="https://github.com/kanuka/kanuka"> <i class="fab fa-github"></i></a></li>
           </ul>
         </div><!--/.nav-collapse -->
@@ -140,11 +140,44 @@
 <p>
   We can use <code>java.util.Optional</T></code> to inject dependencies that might not exist (might not be provided).
 </p>
+<div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@Singleton</span>
+<span class="kd">class</span> <span class="nc">Pump</span> <span class="o">{</span>
+
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Heater</span> <span class="n">heater</span><span class="o">;</span>
+
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">widget</span><span class="o">;</span>
+
+  <span class="nd">@Inject</span>
+  <span class="n">Pump</span><span class="o">(</span><span class="n">Heater</span> <span class="n">heater</span><span class="o">,</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Widget</span><span class="o">&gt;</span> <span class="n">widget</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">heater</span> <span class="o">=</span> <span class="n">heater</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">widget</span> <span class="o">=</span> <span class="n">widget</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">pump</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">widget</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span>
+      <span class="n">widget</span><span class="o">.</span><span class="na">get</span><span class="o">().</span><span class="na">doStuff</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="o">...</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
 
 <h2 id="list">List</h2>
 <p>
   We can inject a <code>java.util.List</T></code> of beans that implement an interface.
 </p>
+<div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@Singleton</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CombinedBars</span> <span class="o">{</span>
+
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Bar</span><span class="o">&gt;</span> <span class="n">bars</span><span class="o">;</span>
+
+  <span class="nd">@Inject</span>
+  <span class="kd">public</span> <span class="nf">CombinedSomei</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">Bar</span><span class="o">&gt;</span> <span class="n">bars</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">bars</span> <span class="o">=</span> <span class="n">bars</span><span class="o">;</span>
+  <span class="o">}</span>
+</pre></div>
+</div>
 
 <h2 id="provider">Provider</h2>
 <p>
@@ -154,8 +187,23 @@
   This is more limited than using <code>@Factory</code> and <code>@Bean</code>. The expectation is that
   people would generally use Factory and Bean instead of implementing the Provider interface.
 </p>
+<div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@Singleton</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FooProvider</span> <span class="kd">implements</span> <span class="n">Provider</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="o">{</span>
 
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">Bazz</span> <span class="n">bazz</span><span class="o">;</span>
 
+  <span class="n">FooProvider</span><span class="o">(</span><span class="n">Bazz</span> <span class="n">bazz</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">bazz</span> <span class="o">=</span> <span class="n">bazz</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="n">Foo</span> <span class="nf">get</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// maybe do interesting logic, read environment variables ...</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">BasicFoo</span><span class="o">(</span><span class="n">bazz</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
 
 
     </div>
