@@ -57,14 +57,14 @@
     <div class="col-md-9" role="main">
       
 
-<h2>@Singleton</h2>
+<h2 id="singleton">@Singleton</h2>
 <p>
   Put <code>@Singleton</code> on beans that we want dependency injection on.
   These are beans that are created ("wired") by dependency injection and put into the context.
   They are then available to be injected into other beans.
 </p>
 
-<h2>@Inject</h2>
+<h2 id="inject">@Inject</h2>
 <p>
   Put <code>@Inject</code> on the constructor that should be used for constructor dependency injection.
   Note that if there is <code>only one constructor</code> we don't need to put the <code>@Inject</code> on it.
@@ -74,7 +74,7 @@
   be <code>private</code> and must not be <code>final</code> for field injection.
 </p>
 
-<h2>Constructor injection</h2>
+<h2 id="constructor">Constructor injection</h2>
 <div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@Singleton</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">CoffeeMaker</span> <span class="o">{</span>
 
@@ -99,7 +99,7 @@
   to specify <code>@Inject</code>.
 </p>
 
-<h2>Field injection</h2>
+<h2 id="field">Field injection</h2>
 <div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@Singleton</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">CoffeeMaker</span> <span class="o">{</span>
 
@@ -116,7 +116,12 @@
   and it must not be <code>final</code>.
 </p>
 
-<h2>Mixed constructor and field injection</h2>
+<h2 id="mixed">Mixed constructor and field injection</h2>
+<p>
+  We are allowed to mix constructor and field injection. In the below example the Grinder is injected into the constructor
+  and the Pump is injected by field injection.
+</p>
+
 <div class="syntax java"><div class="highlight"><pre><span></span><span class="nd">@Singleton</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">CoffeeMaker</span> <span class="o">{</span>
 
@@ -130,10 +135,26 @@
   <span class="o">}</span>
 </pre></div>
 </div>
+
+<h2 id="optional">Optional</h2>
 <p>
-  We are allowed to mix constructor and field injection. In the above the Grinder is injected into the constructor
-  and the Pump is injected by field injection.
+  We can use <code>java.util.Optional</T></code> to inject dependencies that might not exist (might not be provided).
 </p>
+
+<h2 id="list">List</h2>
+<p>
+  We can inject a <code>java.util.List</T></code> of beans that implement an interface.
+</p>
+
+<h2 id="provider">Provider</h2>
+<p>
+  A Singleton bean can implement <code>javax.inject.Provider</code> to create a bean to be used in injection.
+</p>
+<p>
+  This is more limited than using <code>@Factory</code> and <code>@Bean</code>. The expectation is that
+  people would generally use Factory and Bean instead of implementing the Provider interface.
+</p>
+
 
 
 
@@ -150,6 +171,11 @@
   <li><a href="/docs/#inject">@Inject</a></li>
   <li><a href="/docs/#constructor">Constructor injection</a></li>
   <li><a href="/docs/#field">Field injection</a></li>
+  <li><a href="/docs/#mixed">Mixed constructor and field</a></li>
+  <li><a href="/docs/#optional">Optional</a></li>
+  <li><a href="/docs/#list">List</a></li>
+  <li><a href="/docs/#provider">Provider</a></li>
+
 </ul>
 </li>
 <li >
